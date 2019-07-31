@@ -1,2 +1,27 @@
 # X-Cart-Payment-gateway
-Payme Checkout Plugin for X-Cart
+
+Payme модуль для X-Cart
+
+
+## Requirements
+
+- Web Server (Apache suggested)
+- Database (MySQLi suggested)
+- PHP Version 7.2+
+- X-Cart v5.4.0.x +
+- Merchant ID, Production & Test Keys
+- Production & Test Gateway URLs
+
+## Для установки модуля необходимо:
+
+1. Распаковать архив с модулем. 
+2. Скопировать содержимое директорий classes skins в корневую директорию сайта.
+
+## Настройка модуля
+- Зайти в раздел «Инструменты» -> «Управление кэшем» нажать кнопку «ПУСК».
+- Зайти в раздел «Мои модули» найдите модуль «Payme» и нажать кнопку «ВКЛЮЧИТЬ» потом «ПРИМЕНИТЬ ИЗМЕНЕНИЯ».
+- Зайти  в  раздел  «Настройка магазига» -> «Настройки оплаты»  и  добавить новый  метод  оплаты.
+- Заполнить настройки.
+
+ID поставщика(Merchant ID)  и  Ключ - пароль кассы(Production Keys) можно получить в Личном кабинете.
+
