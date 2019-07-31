@@ -1,0 +1,44 @@
+XLite\Model\Payment\Method:
+  - service_name: 'Payme'
+    class: 'Module\Paycom\Payme\Model\Payment\Processor\Payme'
+    type: 'N'
+    orderby: -9700
+    countries: [RU,UZ,KZ]
+    translations:
+      - code: en
+        name: 'Payme'
+    settings:
+      - name: payme_merchant_id
+      - name: payme_secret_key
+      - name: payme_secret_key_for_test 
+      - name: payme_test_mode
+      - name: payme_checkout_url
+        value: https://checkout.paycom.uz
+      - name: payme_checkout_url_for_test
+        value: https://test.paycom.uz
+      - name: payme_return_url
+      - name: payme_return_after
+      - name: payme_add_product_information
+
+XLite\Model\LanguageLabel:
+  - { directives: { allowedModel: 'XLite\Model\LanguageLabelTranslation' } }
+
+  - { name: 'merchant_id', translations: [{ code: 'en', label: 'Merchant ID' } , { code: 'ru', label: 'ID поставщика' }] }
+  - { name: 'secret_key', translations: [{ code: 'en', label: 'Secret key' } , { code: 'ru', label: 'Ключ - пароль кассы' }] }
+  - { name: 'secret_key_for_test', translations: [{ code: 'en', label: 'Secret key for test' } , { code: 'ru', label: 'Ключ - пароль для теста' }] }
+  - { name: 'test_mode', translations: [{ code: 'en', label: 'Enable test mode' } , { code: 'ru', label: 'Включить режим тестирования' }] }
+  - { name: 'yes', translations: [{ code: 'en', label: 'Yes' } , { code: 'ru', label: 'Да' }] }
+  - { name: 'no',  translations: [{ code: 'en', label: 'No' } , { code: 'ru', label: 'Нет' }] }
+  - { name: 'endpoint_url', translations: [{ code: 'en', label: 'Endpoint Url' } , { code: 'ru', label: 'Endpoint Url' }] }
+  - { name: 'endpoint_url_comment', translations: [{ code: 'en', label: 'This URL must be entered setting of cashier in personal cabinet of Merchant' } , { code: 'ru', label: 'Данные URL необходимо внести в настройки кассы в кабинете поставщика' }] }
+  - { name: 'checkout_url', translations: [{ code: 'en', label: 'URL gateway' } , { code: 'ru', label: 'URL-адрес шлюза' }] }
+  - { name: 'checkout_url_for_test', translations: [{ code: 'en', label: 'URL gateway for test' } , { code: 'ru', label: 'URL-адрес шлюза для теста' }] }
+  - { name: 'return_url', translations: [{ code: 'en', label: 'Redirection URL' } , { code: 'ru', label: 'Перенаправление URL' }] }
+  - { name: 'return_after', translations: [{ code: 'en', label: 'Return after payment' } , { code: 'ru', label: 'Вернуться после оплаты через' }] }
+  - { name: 'instantly', translations: [{ code: 'en', label: 'Instantly' } , { code: 'ru', label: 'Моментально' }] }
+  - { name: 's15', translations: [{ code: 'en', label: '15 seconds' } , { code: 'ru', label: '15 секунд' }] }
+  - { name: 's30', translations: [{ code: 'en', label: '30 seconds' } , { code: 'ru', label: '30 секунд' }] }
+  - { name: 's60', translations: [{ code: 'en', label: '60 seconds' } , { code: 'ru', label: '60 секунд' }] }
+  - { name: 'add_product_information', translations: [{ code: 'en', label: 'Add information about products to check' } , { code: 'ru', label: 'Добавить в чек данные о товарах' }] }
+
+

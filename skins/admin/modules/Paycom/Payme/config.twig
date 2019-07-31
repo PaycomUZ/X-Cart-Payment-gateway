@@ -1,0 +1,114 @@
+{##
+ # Payme payment system configuration page
+ #}
+ 
+<table cellspacing="1" cellpadding="5" class="settings-table">
+
+  <tr>
+    <td class="setting-name">
+    <label for="settings_endpoint_url">{{ t('endpoint_url') }}</label>
+    </td>
+    <td>
+      {{ this.paymentMethod.processor.getPaymeCallbackURL2() }} <br> {{ t('endpoint_url_comment') }}
+    </td>
+  </tr>
+
+  <tr>
+    <td class="setting-name">
+    <label for="settings_purse">{{ t('merchant_id') }}</label>
+    </td>
+    <td>
+      <input type="text" id="settings_merchant_id" name="settings[payme_merchant_id]" value="{{ this.paymentMethod.getSetting('payme_merchant_id') }}" class="field-required" />
+    </td>
+  </tr>
+
+  <tr>
+    <td class="setting-name">
+    <label for="settings_secret_key">{{ t('secret_key') }}</label>
+    </td>
+    <td>
+      <input type="text" id="settings_secret_key" name="settings[payme_secret_key]" value="{{ this.paymentMethod.getSetting('payme_secret_key') }}" class="field-required" />
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="setting-name">
+    <label for="settings_secret_key_for_test">{{ t('secret_key_for_test') }}</label>
+    </td>
+    <td>
+      <input type="text" id="settings_secret_key_for_test" name="settings[payme_secret_key_for_test]" value="{{ this.paymentMethod.getSetting('payme_secret_key_for_test') }}" class="field-required" />
+    </td>
+  </tr>
+
+  <tr>
+    <td class="setting-name">
+    <label for="settings_test_mode">{{ t('test_mode') }}</label>
+    </td>
+    <td>
+      <select id="settings_test_mode" name="settings[payme_test_mode]" value="{{ this.paymentMethod.getSetting('payme_test_mode') }}">
+        <option value="payme_no"  {% if this.paymentMethod.getSetting('payme_test_mode') == 'payme_no'  %}selected="selected"{% endif %}>{{ t('no') }}</option>
+        <option value="payme_yes" {% if this.paymentMethod.getSetting('payme_test_mode') == 'payme_yes' %}selected="selected"{% endif %}>{{ t('yes') }}</option> 
+      </select>
+    </td>
+  </tr>
+  
+   <tr>
+    <td class="setting-name">
+    <label for="settings_checkout_url">{{ t('checkout_url') }}</label>
+    </td>
+    <td>
+      <input type="text" id="settings_checkout_url" name="settings[payme_checkout_url]" value="{{ this.paymentMethod.getSetting('payme_checkout_url') }}" class="field-required"/>
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="setting-name">
+    <label for="settings_checkout_url_for_test">{{ t('checkout_url_for_test') }}</label>
+    </td>
+    <td>
+      <input type="text" id="settings_checkout_url_for_test" name="settings[payme_checkout_url_for_test]" value="{{ this.paymentMethod.getSetting('payme_checkout_url_for_test') }}" class="field-required" />
+    </td>
+  </tr>
+  
+	{% set r_url =this.paymentMethod.getSetting('payme_return_url') %}
+	{% if r_url|length<=0 %}
+	{% set r_url=this.paymentMethod.processor.getPaymeSuccessURL() %}
+	{% endif %}
+
+  <tr>
+    <td class="setting-name">
+    <label for="settings_return_url">{{ t('return_url') }} </label>
+    </td>
+    <td>
+      <input type="text" id="settings_return_url" name="settings[payme_return_url]"  value="{{ r_url }} " class="field-required" />
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="setting-name">
+    <label for="settings_return_after">{{ t('return_after') }}</label>
+    </td>
+    <td>
+      <select id="settings_return_after" name="settings[payme_return_after]" value="{{ this.paymentMethod.getSetting('payme_return_after') }}">
+        <option value="payme_instantly" {% if this.paymentMethod.getSetting('payme_return_after') == 'payme_instantly'  %}selected="selected"{% endif %}>{{ t('instantly') }}</option>
+        <option value="payme_s15"       {% if this.paymentMethod.getSetting('payme_return_after') == 'payme_s15' %}selected="selected"{% endif %}>{{ t('s15') }}</option>
+		<option value="payme_s30"       {% if this.paymentMethod.getSetting('payme_return_after') == 'payme_s30' %}selected="selected"{% endif %}>{{ t('s30') }}</option>
+        <option value="payme_s60"       {% if this.paymentMethod.getSetting('payme_return_after') == 'payme_s60' %}selected="selected"{% endif %}>{{ t('s60') }}</option> 
+      </select>
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="setting-name">
+    <label for="settings_add_product_information">{{ t('add_product_information') }}</label>
+    </td>
+    <td>
+      <select id="settings_add_product_information" name="settings[payme_add_product_information]" value="{{ this.paymentMethod.getSetting('payme_add_product_information') }}">
+        <option value="payme_no"  {% if this.paymentMethod.getSetting('payme_add_product_information') == 'payme_no'  %}selected="selected"{% endif %}>{{ t('no') }}</option>
+        <option value="payme_yes" {% if this.paymentMethod.getSetting('payme_add_product_information') == 'payme_yes' %}selected="selected"{% endif %}>{{ t('yes') }}</option> 
+      </select>
+    </td>
+  </tr>
+
+</table>
+

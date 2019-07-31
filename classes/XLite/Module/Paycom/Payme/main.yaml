@@ -1,0 +1,11 @@
+version: 5.4.0.0
+type: payment
+authorName: Paycom
+moduleName: Payme
+description: 'Payme Business даёт возможность принимать платежи на вашем веб-сайте или через приложение, по e-mail или SMS, или же в самой торговой точке по системе бесконтактных платежей и QR-коду.'
+minorRequiredCoreVersion: 0
+dependsOn: {  }
+incompatibleWith: {  }
+skins: {  }
+showSettingsForm: false
+canDisable: true
