@@ -21,7 +21,7 @@ class PaymeApi {
  
 	public function parseRequest() {
 
-		//file_put_contents(dirname(__FILE__) . "../../../../../../../../payme.log", " PaymeApi -> parseRequest **************  begin  ********** >>>>>>>>".date("M,d,Y h:i:s A").PHP_EOL, FILE_APPEND);
+		//file_put_contents(dirname(__FILE__) . "../../../../../../../../payme.log", " PaymeApi -> parseRequest **************  begin  ********************** >>>>>>>>>>>>>>>".date("M,d,Y h:i:s A").PHP_EOL, FILE_APPEND);
 		
 		if ( (!isset($this->inputArray)) || empty($this->inputArray) ) {
 
@@ -84,6 +84,8 @@ class PaymeApi {
 
 				if ( method_exists($this,"payme_".$this->inputArray['method'])) {
 
+					//file_put_contents(dirname(__FILE__) . "../../../../../../../../payme.log", " PaymeApi -> parseRequest  RUN ".$this->inputArray['method'].' -> '.date("M,d,Y h:i:s A").PHP_EOL, FILE_APPEND);
+
 					$methodName="payme_".$this->inputArray['method'];
 					$this->$methodName();
 
@@ -93,6 +95,8 @@ class PaymeApi {
 				}
 			}
 		}
+
+		//file_put_contents(dirname(__FILE__) . "../../../../../../../../payme.log", " PaymeApi -> parseRequest  End ".date("M,d,Y h:i:s A").PHP_EOL, FILE_APPEND);
 
 		return $this->GenerateResponse();
 	}
@@ -182,9 +186,9 @@ class PaymeApi {
 					$this->setErrorCod(-31052, 'order_id');
 
 				// Сверка суммы заказа
-				} else  if ( ($order->getTotal()*100) != $this->inputArray['params']['amount'] ) {
+				} else  if ( abs(($order->getTotal()*100) - (int)$this->inputArray['params']['amount'])>=0.01) {
 
-					$this->setErrorCod(-31001, 'order_id'); 
+					$this->setErrorCod(-31001, 'order_id ='.gettype($order->getTotal()).'-'.gettype(($order->getTotal()*100)) .'<>'.gettype($this->inputArray['params']['amount'])); 
 
 				// Allow true
 				} else {
@@ -202,8 +206,11 @@ class PaymeApi {
 
 	public function payme_CreateTransaction() {
 
-		$this->getTransactionByOrderId($this->inputArray['params']['account']['order_id']);
+		$this->getTransactionDateByPaymeTrId($this->inputArray['params']['id']);
+		
+		if ($this->lastTransaction) {
 		$order=$this->lastTransaction->getOrder();
+		}
 
 		// Существует транзакция
 		if ($this->lastTransactionDate) {
@@ -246,6 +253,12 @@ class PaymeApi {
 
 		// Транзакция нет
 		} else {
+			
+			$this->getTransactionByOrderId($this->inputArray['params']['account']['order_id']); 
+
+			if ($this->lastTransaction) {
+				$order=$this->lastTransaction->getOrder();
+			}
  
 			// Заказ не найден
 			if (! $order ) {
@@ -255,13 +268,16 @@ class PaymeApi {
 			// Заказ найден
 			} else {
 
+				// Транзакция статусс
+				if ($this->lastTransaction->getStatus()==$this->lastTransaction::STATUS_INPROGRESS ) {
+ 
 				// Проверка состояния заказа 
-				if ($order->getPaymentStatus()->getCode()!=$order->getPaymentStatus()::STATUS_QUEUED )  { //  order status 1 Q
+				if ($order->getPaymentStatus()->getCode()!=$order->getPaymentStatus()::STATUS_QUEUED )  { //order status 1 Q
 
 					$this->setErrorCod(-31052, 'order_id');
 
 				// Сверка суммы заказа 	
-				} else  if ( ($order->getTotal()*100) != $this->inputArray['params']['amount'] ) {
+				} else  if ( abs(($order->getTotal()*100) - (int)$this->inputArray['params']['amount'])>=0.01) {
 
 					$this->setErrorCod(-31001, 'order_id');
 
@@ -287,7 +303,12 @@ class PaymeApi {
 					$this->responceType=2; 
 					$this->getTransactionByOrderId($this->inputArray['params']['account']['order_id']);
 				}
-			}
+				// Существует транзакция
+				} else {
+
+				$this->setErrorCod(-31051, 'order_id');
+				}
+			} //
 		}
 	}
  
@@ -318,11 +339,13 @@ class PaymeApi {
 
 			// Поиск заказа по order_id
 			$order=$this->lastTransaction->getOrder();
-
+  
 			// Проверка состояние транзакцие
 			if ($this->lastTransaction->getStatus() ==$this->lastTransaction::STATUS_PENDING){ //Transaction status W
 
-				$paycom_time_integer=$this->datetime2timestamp($this->lastTransaction['create_time']) *1000;
+				$paycom_time_integer=$this->datetime2timestamp($this->getTransactionDateByName('create_time')) *1000;
+				
+
 				$paycom_time_integer=$paycom_time_integer+43200000;
 
 				// Проверка времени создания транзакции
@@ -507,9 +530,9 @@ class PaymeApi {
 					"create_time"	=> $this->datetime2timestamp($this->getTransactionDateByName('create_time')) *1000,
 					"perform_time"  => $this->datetime2timestamp($this->getTransactionDateByName('perform_time'))*1000,
 					"cancel_time"   => $this->datetime2timestamp($this->getTransactionDateByName('cancel_time')) *1000,
-					"transaction"	=>          $this->getTransactionDateByName('cms_order_id'), //FIX $this->order_id,
+					"transaction"	=> $this->getTransactionDateByName('cms_order_id'), //FIX $this->order_id,
 					"state"			=>     (int)$this->getTransactionDateByName('state'),
-					"reason"		=> (is_null($this->getTransactionDateByName('reason'))? null: (int)$this->getTransactionDateByName('reason'))
+					"reason"		=> ( $this->getTransactionDateByName('reason') ? (int)$this->getTransactionDateByName('reason') : null)
 				);
 
 			} else if ($this->responceType==3) {
@@ -517,7 +540,7 @@ class PaymeApi {
 				$responseArray = array('result'=>array( 'success' => true ));
 
 			} else if ($this->responceType==4) {
-				
+
 				$responseArray=$this->statement;
 			}
 
@@ -526,13 +549,14 @@ class PaymeApi {
 			$responseArray['id']	= $this->request_id;
 			$responseArray['error'] = array (
 
-				'code'   =>(int)$this->errorCod,
+				'code'  =>(int)$this->errorCod,
+				"data" 	=>$this->errorInfo,
 				'message'=> array(
 
 					"ru"=>$this->getGenerateErrorText($this->errorCod,"ru"),
 					"uz"=>$this->getGenerateErrorText($this->errorCod,"uz"),
 					"en"=>$this->getGenerateErrorText($this->errorCod,"en"),
-					"data" =>$this->errorInfo
+
 				)
 			);
 		}
