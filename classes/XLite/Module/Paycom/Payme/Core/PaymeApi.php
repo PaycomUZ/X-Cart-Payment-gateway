@@ -344,7 +344,6 @@ class PaymeApi {
 			if ($this->lastTransaction->getStatus() ==$this->lastTransaction::STATUS_PENDING){ //Transaction status W
 
 				$paycom_time_integer=$this->datetime2timestamp($this->getTransactionDateByName('create_time')) *1000;
-				
 
 				$paycom_time_integer=$paycom_time_integer+43200000;
 
