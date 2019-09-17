@@ -13,7 +13,7 @@ use XLite\Model\Payment\Transaction;
 
 class Payme extends \XLite\Model\Payment\Base\WebBased {
 
-	protected $allowedCurrencies = array('UZS', 'RUB', 'USD');	
+	protected $allowedCurrencies = array('UZS', 'RUB', 'USD');
 
 	protected function getAllowedCurrencies(Method $method) {
 

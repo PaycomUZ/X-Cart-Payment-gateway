@@ -14,8 +14,11 @@ class PaymeCallback extends \XLite\Controller\Customer\ACustomer {
 		header('Content-type: application/json charset=utf-8');
 
 		$api = new PaymeApi();
+
 		$api->setInputArray(file_get_contents("php://input"));
-		echo json_encode($api->parseRequest());
+		$resp=json_encode($api->parseRequest(),JSON_UNESCAPED_UNICODE );
+
+		echo $resp;
 
 		//file_put_contents(dirname(__FILE__) . "../../../../../../../../payme.log", " PaymeCallback -> doActionCallback end".PHP_EOL, FILE_APPEND);
 	}
